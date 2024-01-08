@@ -1,6 +1,7 @@
 import functionalwrappers.consumers.KawaBiConsumer;
 import functionalwrappers.consumers.KawaQuadConsumer;
 import functionalwrappers.consumers.KawaTriConsumer;
+import functionalwrappers.functions.KawaFunction;
 import functionalwrappers.predicates.KawaPredicate;
 import gnu.expr.Language;
 import gnu.mapping.Environment;
@@ -17,7 +18,7 @@ public class Main {
 
         String consumer = """
                 (define (predicate obj)
-                    (if (eq? (modulo (invoke obj 'weight) 2) 0) #t #f))
+                    (* (invoke obj 'weight) 2))
                 """;
 
         Environment env = scheme.getEnvironment();
@@ -26,9 +27,9 @@ public class Main {
         scheme.eval(consumer);
 
         Procedure p = (Procedure) scheme.eval("predicate");
-        Predicate<TestRecord> pred = KawaPredicate.of(p);
+        KawaFunction<TestRecord, Integer> pred = KawaFunction.of(p);
 
-        System.out.println(pred.test(tr));
+        System.out.println(pred.apply(tr));
     }
 
     public record TestRecord(
