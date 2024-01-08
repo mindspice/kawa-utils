@@ -1,14 +1,11 @@
-import functionalwrappers.consumers.KawaBiConsumer;
-import functionalwrappers.consumers.KawaQuadConsumer;
-import functionalwrappers.consumers.KawaTriConsumer;
-import functionalwrappers.functions.KawaFunction;
-import functionalwrappers.predicates.KawaPredicate;
+import functionalwrappers.streams.KawaStream;
 import gnu.expr.Language;
+
+import gnu.lists.LList;
 import gnu.mapping.Environment;
 import gnu.mapping.Procedure;
+import gnu.math.IntNum;
 import kawa.standard.Scheme;
-
-import java.util.function.Predicate;
 
 
 public class Main {
@@ -17,25 +14,22 @@ public class Main {
         Language scheme = Scheme.getInstance();
 
         String consumer = """
-                (define (predicate obj)
-                    (* (invoke obj 'weight) 2))
+                (define (generate-list)
+                (list 1 2 3 4 5 7 8 9 10))
+                                                        
                 """;
 
         Environment env = scheme.getEnvironment();
-
-        var tr = new TestRecord(2);
         scheme.eval(consumer);
 
-        Procedure p = (Procedure) scheme.eval("predicate");
-        KawaFunction<TestRecord, Integer> pred = KawaFunction.of(p);
+        Procedure generateList = (Procedure) scheme.eval("generate-list");
+        Object schemeList = generateList.apply0();
 
-        System.out.println(pred.apply(tr));
+        if (schemeList instanceof LList list) {
+            KawaStream.toStream(list, (obj) -> ((IntNum) obj).intValue()).forEach(System.out::println);
+        }
+
     }
-
-    public record TestRecord(
-            int weight
-    ){}
-
 
 
 }
