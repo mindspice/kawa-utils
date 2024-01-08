@@ -13,5 +13,79 @@
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+    <dependencies>
+        <dependency>
+            <groupId>io.mindspice</groupId>
+            <artifactId>mind-lib</artifactId>
+            <version>0.4.0</version>
+        </dependency>
 
+        <dependency>
+            <groupId>com.github.arvyy</groupId>
+            <artifactId>kawa</artifactId>
+            <version>3.1.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.arvyy</groupId>
+            <artifactId>kawa-maven-plugin</artifactId>
+            <version>0.0.8</version>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.github.arvyy</groupId>
+                <artifactId>kawa-maven-plugin</artifactId>
+                <version>0.0.8</version>
+                <extensions>true</extensions>
+                <executions>
+                    <!--
+                        The below attaches kawa:test goal to maven test phase
+                        This way, when calling `mvn install`, kawa tests will be automatically executed
+                        and will fail the build / installation if there are test errors
+                        Remove if you don't have tests (shame on you)
+                    -->
+                    <execution>
+                        <id>test</id>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                    </execution>
+                    <!-- similarly, attach kawa:compile goal to maven compile phase, to produce class artifacts when calling `mvn package` -->
+                    <execution>
+                        <id>compile</id>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!--
+             add a shade plugin like this, which packages all jar dependencies (including kawa) into final
+             jar artifact, making it standalone
+             If you omit this, you will have to manually assemble classpath / jars at runtime
+            -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.4</version>
+                <configuration>
+                    <transformers>
+                        <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                            <mainClass>main</mainClass>
+                        </transformer>
+                    </transformers>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>
