@@ -1,3 +1,6 @@
+import functionalwrappers.streams.KawaDoubleStream;
+import functionalwrappers.streams.KawaIntStream;
+import functionalwrappers.streams.KawaLongStream;
 import functionalwrappers.streams.KawaStream;
 import gnu.expr.Language;
 
@@ -15,7 +18,7 @@ public class Main {
 
         String consumer = """
                 (define (generate-list)
-                (list 1 2 3 4 5 7 8 9 10))
+                (list 1.2 2.2 3.342342 4.42342342342 5.342 7.32 8.3423423425123123123123123235252 9.12 10.3423432))
                                                         
                 """;
 
@@ -25,9 +28,8 @@ public class Main {
         Procedure generateList = (Procedure) scheme.eval("generate-list");
         Object schemeList = generateList.apply0();
 
-        if (schemeList instanceof LList list) {
-            KawaStream.toStream(list, (obj) -> ((IntNum) obj).intValue()).forEach(System.out::println);
-        }
+            KawaDoubleStream.toStream(schemeList).forEach(System.out::println);
+
 
     }
 

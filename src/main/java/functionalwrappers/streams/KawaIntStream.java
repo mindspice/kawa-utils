@@ -2,33 +2,31 @@ package functionalwrappers.streams;
 
 import gnu.lists.LList;
 import gnu.lists.Pair;
+import gnu.math.IntNum;
 
 import java.util.NoSuchElementException;
-import java.util.function.Function;
-import java.util.stream.Stream;
+import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
 import java.util.Spliterator;
 import java.util.Spliterators;
 
 
-public class KawaStream {
+public class KawaIntStream {
 
-    public static <T> Stream<T> toStream(Object rawList, Function<Object, T> converter) {
+    public static IntStream toStream(Object rawList) {
         if (rawList instanceof LList list) {
-            return StreamSupport.stream(
-                    Spliterators.spliteratorUnknownSize(new LListIterator<>(list, converter), Spliterator.ORDERED), false);
+            return StreamSupport.intStream(
+                    Spliterators.spliteratorUnknownSize(new IntNumIterator(list), Spliterator.ORDERED), false);
         } else {
             throw new ClassCastException("Object is not an instance of LList");
         }
     }
 
-    private static class LListIterator<T> implements java.util.Iterator<T> {
+    private static class IntNumIterator implements java.util.PrimitiveIterator.OfInt {
         private Object current;
-        private final Function<Object, T> converter;
 
-        public LListIterator(LList list, Function<Object, T> converter) {
+        public IntNumIterator(LList list) {
             this.current = list;
-            this.converter = converter;
         }
 
         @Override
@@ -37,15 +35,19 @@ public class KawaStream {
         }
 
         @Override
-        public T next() {
+        public int nextInt() {
             if (!(current instanceof Pair pair)) {
                 throw new NoSuchElementException();
             }
 
-            T convertedValue = converter.apply(pair.getCar());
+            Object value = pair.getCar();
             current = pair.getCdr();
 
-            return convertedValue;
+            if (value instanceof IntNum intNum) {
+                return intNum.intValue();
+            }
+
+            throw new NoSuchElementException("Element is not an IntNum");
         }
     }
 }
