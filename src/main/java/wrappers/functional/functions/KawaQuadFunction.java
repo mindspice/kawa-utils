@@ -1,8 +1,7 @@
-package functionalwrappers.functions;
+package wrappers.functional.functions;
 
 import gnu.mapping.Procedure;
 import io.mindspice.mindlib.functional.functions.QuadFunction;
-import io.mindspice.mindlib.functional.functions.TriFunction;
 
 
 public record KawaQuadFunction<T, U, V, W, R>(

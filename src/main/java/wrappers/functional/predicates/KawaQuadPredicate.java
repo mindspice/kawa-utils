@@ -1,8 +1,7 @@
-package functionalwrappers.predicates;
+package wrappers.functional.predicates;
 
 import gnu.mapping.Procedure;
 import io.mindspice.mindlib.functional.predicates.QuadPredicate;
-import io.mindspice.mindlib.functional.predicates.TriPredicate;
 
 
 public record KawaQuadPredicate<T, U, V, W>(

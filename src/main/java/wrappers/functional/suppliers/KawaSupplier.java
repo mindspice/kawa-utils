@@ -1,4 +1,4 @@
-package functionalwrappers.suppliers;
+package wrappers.functional.suppliers;
 
 import gnu.mapping.Procedure;
 

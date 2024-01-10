@@ -1,9 +1,7 @@
-package functionalwrappers.functions;
+package wrappers.functional.functions;
 
 import gnu.mapping.Procedure;
 import io.mindspice.mindlib.functional.functions.TriFunction;
-
-import java.util.function.BiFunction;
 
 
 public record KawaTriFunction<T, U, V, R>(

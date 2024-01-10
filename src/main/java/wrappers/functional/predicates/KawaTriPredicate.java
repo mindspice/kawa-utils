@@ -1,9 +1,7 @@
-package functionalwrappers.predicates;
+package wrappers.functional.predicates;
 
 import gnu.mapping.Procedure;
 import io.mindspice.mindlib.functional.predicates.TriPredicate;
-
-import java.util.function.BiPredicate;
 
 
 public record KawaTriPredicate<T, U, V>(

@@ -1,9 +1,8 @@
-package functionalwrappers.predicates;
+package wrappers.functional.predicates;
 
 import gnu.mapping.Procedure;
 
 import java.util.function.BiPredicate;
-import java.util.function.Predicate;
 
 
 public record KawaBiPredicate<T, U>(

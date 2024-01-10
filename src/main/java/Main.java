@@ -1,20 +1,24 @@
-import functionalwrappers.streams.KawaDoubleStream;
-import functionalwrappers.streams.KawaIntStream;
-import functionalwrappers.streams.KawaLongStream;
-import functionalwrappers.streams.KawaStream;
+import gnu.expr.ModuleBody;
+import gnu.kawa.functions.LProcess;
+import gnu.lists.U8Vector;
+import kawa.standard.SchemeCompilation;
+import wrappers.KawaInstance;
+import wrappers.functional.streams.KawaDoubleStream;
 import gnu.expr.Language;
 
-import gnu.lists.LList;
 import gnu.mapping.Environment;
 import gnu.mapping.Procedure;
-import gnu.math.IntNum;
 import kawa.standard.Scheme;
+
+import java.util.List;
 
 
 public class Main {
 
     public static void main(String[] args) throws Throwable {
-        Language scheme = Scheme.getInstance();
+        KawaInstance kawa = new KawaInstance();
+
+
 
         String consumer = """
                 (define (generate-list)
@@ -22,13 +26,39 @@ public class Main {
                                                         
                 """;
 
-        Environment env = scheme.getEnvironment();
-        scheme.eval(consumer);
+        kawa.safeEval(consumer);
+        double[][] d1 = new double[100_000][10];
+        double[][] d2 = new double[100_000][10];
 
-        Procedure generateList = (Procedure) scheme.eval("generate-list");
-        Object schemeList = generateList.apply0();
+        var t = System.nanoTime();
+        for (int i = 0; i < 100_000; i++) {
+            var result = kawa.<Procedure>castEval("generate-list");
+            Object schemeList = result.apply0();
 
-            KawaDoubleStream.toStream(schemeList).forEach(System.out::println);
+            d1[i] =  KawaDoubleStream.toStream(schemeList).toArray();
+        }
+
+        System.out.println(System.nanoTime() -t);
+
+        t = System.nanoTime();
+        for (int i = 0; i < 100_000; i++) {
+            var result = (Procedure) kawa.eval("generate-list");
+            Object schemeList =  result.apply0();
+            d2[i] = KawaDoubleStream.toStream(schemeList).toArray();
+        }
+        System.out.println(System.nanoTime() - t);
+
+        System.out.println(d1);
+        System.out.println(d2);
+
+
+
+
+//
+//        var result = kawa.<Procedure>safeEval("generate-list");
+//        Object schemeList = result.result().orElseThrow().apply0();
+//
+//            KawaDoubleStream.toStream(schemeList).forEach(System.out::println);
 
 
     }

@@ -1,31 +1,32 @@
-package functionalwrappers.streams;
+package wrappers.functional.streams;
 
 import gnu.lists.LList;
 import gnu.lists.Pair;
 import gnu.math.IntNum;
 
 import java.util.NoSuchElementException;
-import java.util.stream.IntStream;
-import java.util.stream.StreamSupport;
+import java.util.PrimitiveIterator;
 import java.util.Spliterator;
 import java.util.Spliterators;
+import java.util.stream.LongStream;
+import java.util.stream.StreamSupport;
 
 
-public class KawaIntStream {
+public class KawaLongStream {
 
-    public static IntStream toStream(Object rawList) {
+    public static LongStream toStream(Object rawList) {
         if (rawList instanceof LList list) {
-            return StreamSupport.intStream(
-                    Spliterators.spliteratorUnknownSize(new IntNumIterator(list), Spliterator.ORDERED), false);
+            return StreamSupport.longStream(
+                    Spliterators.spliteratorUnknownSize(new LongNumIterator(list), Spliterator.ORDERED), false);
         } else {
             throw new ClassCastException("Object is not an instance of LList");
         }
     }
 
-    private static class IntNumIterator implements java.util.PrimitiveIterator.OfInt {
+    private static class LongNumIterator implements PrimitiveIterator.OfLong {
         private Object current;
 
-        public IntNumIterator(LList list) {
+        public LongNumIterator(LList list) {
             this.current = list;
         }
 
@@ -35,7 +36,7 @@ public class KawaIntStream {
         }
 
         @Override
-        public int nextInt() {
+        public long nextLong() {
             if (!(current instanceof Pair pair)) {
                 throw new NoSuchElementException();
             }
@@ -44,7 +45,7 @@ public class KawaIntStream {
             current = pair.getCdr();
 
             if (value instanceof IntNum intNum) {
-                return intNum.intValue();
+                return intNum.longValue();
             }
 
             throw new NoSuchElementException("Element is not an IntNum");

@@ -1,32 +1,33 @@
-package functionalwrappers.streams;
+package wrappers.functional.streams;
 
 import gnu.lists.LList;
 import gnu.lists.Pair;
 import gnu.math.IntNum;
+import gnu.math.RealNum;
 
 import java.util.NoSuchElementException;
 import java.util.PrimitiveIterator;
 import java.util.Spliterator;
 import java.util.Spliterators;
-import java.util.stream.LongStream;
+import java.util.stream.DoubleStream;
 import java.util.stream.StreamSupport;
 
 
-public class KawaLongStream {
+public class KawaDoubleStream {
 
-    public static LongStream toStream(Object rawList) {
+    public static DoubleStream toStream(Object rawList) {
         if (rawList instanceof LList list) {
-            return StreamSupport.longStream(
-                    Spliterators.spliteratorUnknownSize(new LongNumIterator(list), Spliterator.ORDERED), false);
+            return StreamSupport.doubleStream(
+                    Spliterators.spliteratorUnknownSize(new DoubleNumIterator(list), Spliterator.ORDERED), false);
         } else {
             throw new ClassCastException("Object is not an instance of LList");
         }
     }
 
-    private static class LongNumIterator implements PrimitiveIterator.OfLong {
+    private static class DoubleNumIterator implements PrimitiveIterator.OfDouble {
         private Object current;
 
-        public LongNumIterator(LList list) {
+        public DoubleNumIterator(LList list) {
             this.current = list;
         }
 
@@ -36,7 +37,7 @@ public class KawaLongStream {
         }
 
         @Override
-        public long nextLong() {
+        public double nextDouble() {
             if (!(current instanceof Pair pair)) {
                 throw new NoSuchElementException();
             }
@@ -44,8 +45,8 @@ public class KawaLongStream {
             Object value = pair.getCar();
             current = pair.getCdr();
 
-            if (value instanceof IntNum intNum) {
-                return intNum.longValue();
+            if (value instanceof RealNum intNum) {
+                return intNum.doubleValue();
             }
 
             throw new NoSuchElementException("Element is not an IntNum");

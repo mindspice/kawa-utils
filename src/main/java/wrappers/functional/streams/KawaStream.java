@@ -1,4 +1,4 @@
-package functionalwrappers.streams;
+package wrappers.functional.streams;
 
 import gnu.lists.LList;
 import gnu.lists.Pair;

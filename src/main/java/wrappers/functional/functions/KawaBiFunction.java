@@ -1,9 +1,8 @@
-package functionalwrappers.functions;
+package wrappers.functional.functions;
 
 import gnu.mapping.Procedure;
 
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
 
 public record KawaBiFunction<T, U, R>(

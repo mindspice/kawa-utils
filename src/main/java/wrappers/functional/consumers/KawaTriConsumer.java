@@ -1,4 +1,4 @@
-package functionalwrappers.consumers;
+package wrappers.functional.consumers;
 
 import gnu.mapping.Procedure;
 import io.mindspice.mindlib.functional.consumers.TriConsumer;

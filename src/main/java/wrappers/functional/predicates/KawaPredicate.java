@@ -1,4 +1,4 @@
-package functionalwrappers.predicates;
+package wrappers.functional.predicates;
 
 import gnu.mapping.Procedure;
 
