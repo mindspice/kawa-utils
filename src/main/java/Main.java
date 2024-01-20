@@ -1,67 +1,51 @@
-import gnu.expr.ModuleBody;
-import gnu.kawa.functions.LProcess;
-import gnu.lists.U8Vector;
-import kawa.standard.SchemeCompilation;
+import io.mindspice.mindlib.data.tuples.Pair;
+import org.mockito.Mockito;
+import validation.KawaValidator;
 import wrappers.KawaInstance;
-import wrappers.functional.streams.KawaDoubleStream;
-import gnu.expr.Language;
+import wrappers.functional.consumers.KawaConsumer;
 
-import gnu.mapping.Environment;
 import gnu.mapping.Procedure;
-import kawa.standard.Scheme;
+import wrappers.functional.functions.KawaFunction;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 
 public class Main {
+    // Test procedure first
+    public static <T> Pair<Boolean, Throwable> testConsumer(Class<T> clazz, String procName, KawaInstance kawa) {
+        try {
+            Consumer<T> consumer = KawaConsumer.of((Procedure) kawa.eval(procName));
+            var mock = Mockito.mock(clazz);
+            consumer.accept(mock);
+        } catch (Throwable e) {
+            return Pair.of(Boolean.FALSE, e);
+        }
+        return Pair.of(Boolean.TRUE, null);
+    }
 
     public static void main(String[] args) throws Throwable {
         KawaInstance kawa = new KawaInstance();
-
-
+        KawaInstance kawaTest = new KawaInstance();
 
         String consumer = """
-                (define (generate-list)
-                (list 1.2 2.2 3.342342 4.42342342342 5.342 7.32 8.3423423425123123123123123235252 9.12 10.3423432))
-                                                        
+                 (define (inc cl ::TestClass:Test2)
+                   (* cl:value cl:value))
                 """;
 
-        kawa.safeEval(consumer);
-        double[][] d1 = new double[100_000][10];
-        double[][] d2 = new double[100_000][10];
+        kawa.eval(consumer);
+        var tc = new TestClass.Test2();
 
-        var t = System.nanoTime();
-        for (int i = 0; i < 100_000; i++) {
-            var result = kawa.<Procedure>castEval("generate-list");
-            Object schemeList = result.apply0();
+        var valid = KawaValidator.validateFunction(tc, String.class, "inc", kawa);
+        System.out.println(valid);
 
-            d1[i] =  KawaDoubleStream.toStream(schemeList).toArray();
-        }
-
-        System.out.println(System.nanoTime() -t);
-
-        t = System.nanoTime();
-        for (int i = 0; i < 100_000; i++) {
-            var result = (Procedure) kawa.eval("generate-list");
-            Object schemeList =  result.apply0();
-            d2[i] = KawaDoubleStream.toStream(schemeList).toArray();
-        }
-        System.out.println(System.nanoTime() - t);
-
-        System.out.println(d1);
-        System.out.println(d2);
+        //kawa.eval(consumer);
 
 
-
-
-//
-//        var result = kawa.<Procedure>safeEval("generate-list");
-//        Object schemeList = result.result().orElseThrow().apply0();
-//
-//            KawaDoubleStream.toStream(schemeList).forEach(System.out::println);
-
+        Function<TestClass.Test2, Integer> func = KawaFunction.of((Procedure) kawa.eval("inc"));
+        System.out.println(func.apply(tc));
 
     }
-
-
 }

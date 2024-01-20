@@ -2,7 +2,6 @@ package wrappers;
 
 import gnu.kawa.io.InPort;
 import kawa.standard.Scheme;
-import wrappers.functional.streams.KawaStream;
 
 import java.io.Reader;
 import java.util.Optional;

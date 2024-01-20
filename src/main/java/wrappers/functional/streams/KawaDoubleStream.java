@@ -2,7 +2,6 @@ package wrappers.functional.streams;
 
 import gnu.lists.LList;
 import gnu.lists.Pair;
-import gnu.math.IntNum;
 import gnu.math.RealNum;
 
 import java.util.NoSuchElementException;
